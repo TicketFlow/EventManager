@@ -1,5 +1,5 @@
 # EventManager
-The event management service is responsible for managing events registered on the EventWave platform. It allows users to create, update and delete events, as well as view details of events and their tickets.
+The event management service is responsible for managing events registered on the TicketFlow platform. It allows users to create, update and delete events, as well as view details of events and their tickets.
 Endpoints
 
 ### Endpoints
