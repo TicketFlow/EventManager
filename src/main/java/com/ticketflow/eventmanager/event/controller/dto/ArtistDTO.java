@@ -9,13 +9,14 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class ArtistDTO {
 
-    private String id;
+    private Long id;
 
     private String name;
 
-    private String description;
+    private String type;
 
-    private String ageGroup;
+    private String gender;
+
 }

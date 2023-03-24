@@ -1,6 +1,8 @@
 package com.ticketflow.eventmanager.event.service;
 
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
+import com.ticketflow.eventmanager.event.exception.NotFoundException;
+import com.ticketflow.eventmanager.event.exception.util.EventErrorCode;
 import com.ticketflow.eventmanager.event.model.Category;
 import com.ticketflow.eventmanager.event.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
@@ -25,6 +27,11 @@ public class CategoryService {
         Category categorySaved = categoryRepository.save(category);
 
         return toDTO(categorySaved);
+    }
+
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(EventErrorCode.CATEGORY_NOT_FOUND.withParams(id)));
     }
 
     private Category toModel(CategoryDTO categoryDTO) {

@@ -1,7 +1,7 @@
 package com.ticketflow.eventmanager.event.controller;
 
-import com.ticketflow.eventmanager.event.controller.dto.CreateEventDTO;
-import com.ticketflow.eventmanager.event.service.EventService;
+import com.ticketflow.eventmanager.event.controller.dto.ArtistDTO;
+import com.ticketflow.eventmanager.event.service.ArtistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,15 +12,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/event")
-public class EventController {
+@RequestMapping("/artist")
+public class ArtistController {
 
-    private final EventService eventService;
+    private final ArtistService artistService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateEventDTO createEvent(@RequestBody CreateEventDTO eventDTO) {
-        return eventService.createEvent(eventDTO);
+    public ArtistDTO createArtist(@RequestBody ArtistDTO artistDTO) {
+        ArtistDTO artist = artistService.createArtist(artistDTO);
+
+        return artist;
     }
 
 }

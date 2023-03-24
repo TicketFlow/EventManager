@@ -9,13 +9,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class EventOrganizerDTO {
 
-    private String id;
+    private Long id;
+
+    private String userId;
 
     private String name;
 
-    private String description;
-
-    private String ageGroup;
+    private String title;
 }

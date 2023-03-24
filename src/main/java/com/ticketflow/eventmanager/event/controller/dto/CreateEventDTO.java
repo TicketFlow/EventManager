@@ -1,6 +1,5 @@
 package com.ticketflow.eventmanager.event.controller.dto;
 
-
 import com.ticketflow.eventmanager.event.model.Artist;
 import com.ticketflow.eventmanager.event.model.EventOrganizer;
 import com.ticketflow.eventmanager.event.model.Location;
@@ -16,7 +15,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventDTO {
+public class CreateEventDTO {
 
     private String id;
 
@@ -30,11 +29,11 @@ public class EventDTO {
 
     private String imagePath;
 
-    private CategoryDTO category;
+    private Long categoryId;
 
     private String details;
 
-    private List<Artist> artists;
+    private List<Long> artists;
 
     private List<EventOrganizer> eventOrganizers;
 

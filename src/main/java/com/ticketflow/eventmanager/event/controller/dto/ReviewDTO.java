@@ -5,17 +5,24 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class ReviewDTO {
 
-    private String id;
+    private Long id;
 
-    private String name;
+    private String eventId;
 
-    private String description;
+    private String userId;
 
-    private String ageGroup;
+    private Float rating;
+
+    private String comment;
+
+    private LocalDateTime timestamp;
+
 }
