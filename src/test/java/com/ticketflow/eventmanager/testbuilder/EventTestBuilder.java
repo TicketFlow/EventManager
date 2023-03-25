@@ -6,6 +6,8 @@ import com.ticketflow.eventmanager.event.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class EventTestBuilder {
 
@@ -53,9 +55,9 @@ public class EventTestBuilder {
                 .imagePath(IMAGE_PATH)
                 .category(CategoryTestBuilder.createDefaultCategory())
                 .details(DETAILS)
-                .artists(Arrays.asList(ArtistTestBuilder.createDefaultArtist()))
-                .eventOrganizers(Arrays.asList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
-                .tickets(Arrays.asList("Example Ticket"));
+                .artists(Collections.singletonList(ArtistTestBuilder.createDefaultArtist()))
+                .eventOrganizers(Collections.singletonList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
+                .tickets(List.of("Example Ticket"));
     }
 
     public EventDTO.EventDTOBuilder buildDTOWithDefaultValues() {
@@ -68,9 +70,9 @@ public class EventTestBuilder {
                 .imagePath(IMAGE_PATH)
                 .category(CategoryTestBuilder.createDefaultCategoryDTO())
                 .details(DETAILS)
-                .artists(Arrays.asList(ArtistTestBuilder.createDefaultArtist()))
-                .eventOrganizers(Arrays.asList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
-                .tickets(Arrays.asList("Example Ticket"));
+                .artists(Collections.singletonList(ArtistTestBuilder.createDefaultArtist()))
+                .eventOrganizers(Collections.singletonList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
+                .tickets(List.of("Example Ticket"));
     }
 
     public CreateEventDTO.CreateEventDTOBuilder buildCreateDTOWithDefaultValues() {
@@ -83,9 +85,9 @@ public class EventTestBuilder {
                 .imagePath(IMAGE_PATH)
                 .categoryId(CategoryTestBuilder.createDefaultCategory().getId())
                 .details(DETAILS)
-                .artists(Arrays.asList(ArtistTestBuilder.createDefaultArtist().getId()))
-                .eventOrganizers(Arrays.asList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
-                .tickets(Arrays.asList("Example Ticket"));
+                .artists(Collections.singletonList(ArtistTestBuilder.createDefaultArtist().getId()))
+                .eventOrganizers(Collections.singletonList(EventOrganizerTestBuilder.createDefaultEventOrganizer()))
+                .tickets(List.of("Example Ticket"));
     }
 
 }

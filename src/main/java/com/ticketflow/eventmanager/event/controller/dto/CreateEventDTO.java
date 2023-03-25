@@ -1,6 +1,5 @@
 package com.ticketflow.eventmanager.event.controller.dto;
 
-import com.ticketflow.eventmanager.event.model.Artist;
 import com.ticketflow.eventmanager.event.model.EventOrganizer;
 import com.ticketflow.eventmanager.event.model.Location;
 import lombok.AllArgsConstructor;

@@ -20,9 +20,7 @@ public class ArtistController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ArtistDTO createArtist(@RequestBody ArtistDTO artistDTO) {
-        ArtistDTO artist = artistService.createArtist(artistDTO);
-
-        return artist;
+        return artistService.createArtist(artistDTO);
     }
 
 }

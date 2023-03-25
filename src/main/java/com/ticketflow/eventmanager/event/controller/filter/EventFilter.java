@@ -2,7 +2,6 @@ package com.ticketflow.eventmanager.event.controller.filter;
 
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
 import com.ticketflow.eventmanager.event.model.Artist;
-import com.ticketflow.eventmanager.event.model.Category;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
