@@ -5,7 +5,6 @@ import com.ticketflow.eventmanager.event.controller.dto.EventDTO;
 import com.ticketflow.eventmanager.event.model.Event;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
