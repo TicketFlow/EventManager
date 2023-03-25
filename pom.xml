@@ -76,6 +76,11 @@
             <artifactId>junit</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <properties>
+            <sonar.organization>ticketflow</sonar.organization>
+            <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        </properties>
     </dependencies>
 
     <dependencyManagement>
