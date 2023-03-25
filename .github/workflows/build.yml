@@ -34,10 +34,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TicketFlow_EventManager -Dsonar.qualitygate.wait=true
-      - name: Check Quality Gate status
-        uses: r0adkll/check-sonarqube-status-action@v1.0.0
-        with:
-          host: 'https://sonarcloud.io'
-          projectKey: 'TicketFlow_EventManager'
-          login: ${{ secrets.SONAR_TOKEN }}
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TicketFlow_EventManager -Dsonar.qualitygate.wait=true -Dsonar.qualitygate.wait=true
