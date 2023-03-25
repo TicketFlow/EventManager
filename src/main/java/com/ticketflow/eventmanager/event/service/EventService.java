@@ -1,6 +1,7 @@
 package com.ticketflow.eventmanager.event.service;
 
 import com.ticketflow.eventmanager.event.controller.dto.CreateEventDTO;
+import com.ticketflow.eventmanager.event.controller.dto.EventDTO;
 import com.ticketflow.eventmanager.event.model.Category;
 import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.EventRepository;
@@ -24,7 +25,7 @@ public class EventService {
         this.modelMapper = modelMapper;
     }
 
-    public CreateEventDTO createEvent(CreateEventDTO eventDTO) {
+    public EventDTO createEvent(CreateEventDTO eventDTO) {
         Category category = categoryService.findById(eventDTO.getCategoryId());
 
         Event event = toModel(eventDTO);
@@ -38,7 +39,7 @@ public class EventService {
         return modelMapper.map(eventDTO, Event.class);
     }
 
-    private CreateEventDTO toDTO(Event event) {
-        return modelMapper.map(event, CreateEventDTO.class);
+    private EventDTO toDTO(Event event) {
+        return modelMapper.map(event, EventDTO.class);
     }
 }

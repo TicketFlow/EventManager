@@ -1,6 +1,7 @@
 package com.ticketflow.eventmanager.event.controller;
 
 import com.ticketflow.eventmanager.event.controller.dto.CreateEventDTO;
+import com.ticketflow.eventmanager.event.controller.dto.EventDTO;
 import com.ticketflow.eventmanager.event.service.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +20,7 @@ public class EventController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CreateEventDTO createEvent(@RequestBody CreateEventDTO eventDTO) {
+    public EventDTO createEvent(@RequestBody CreateEventDTO eventDTO) {
         return eventService.createEvent(eventDTO);
     }
 

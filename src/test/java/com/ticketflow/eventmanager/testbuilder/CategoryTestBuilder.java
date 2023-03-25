@@ -39,10 +39,10 @@ public class CategoryTestBuilder {
 
     public CategoryDTO.CategoryDTOBuilder buildDTOWithDefaultValues() {
         return CategoryDTO.builder()
-                .id(String.valueOf(ID))
+                .id(ID)
                 .name(NAME)
                 .description(DESCRIPTION)
                 .ageGroup(AGE_GROUP);
     }
-    
+
 }

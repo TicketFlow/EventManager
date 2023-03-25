@@ -46,7 +46,6 @@ public class ArtistControllerTest {
     @Test
     public void createArtist_ShouldReturnCreatedArtistDTO() throws Exception {
         ArtistDTO artistDTO = ArtistTestBuilder.createDefaultArtistDTO();
-        ArtistDTO artistToCompare = ArtistTestBuilder.createDefaultArtistDTO();
 
         ArtistDTO createdArtistDTO = ArtistTestBuilder.init()
                 .buildDTOWithDefaultValues()
