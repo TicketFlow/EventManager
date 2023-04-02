@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
-public class ArtistControllerTest {
+class ArtistControllerTest {
 
     private MockMvc mockMvc;
 
@@ -44,7 +44,7 @@ public class ArtistControllerTest {
     }
 
     @Test
-    public void createArtist_ShouldReturnCreatedArtistDTO() throws Exception {
+    void createArtist_ShouldReturnCreatedArtistDTO() throws Exception {
         ArtistDTO artistDTO = ArtistTestBuilder.createDefaultArtistDTO();
 
         ArtistDTO createdArtistDTO = ArtistTestBuilder.init()
