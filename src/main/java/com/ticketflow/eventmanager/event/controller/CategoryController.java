@@ -5,6 +5,7 @@ import com.ticketflow.eventmanager.event.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -19,7 +20,12 @@ public class CategoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CategoryDTO checkout(@RequestBody CategoryDTO categoryDTO) {
+    public CategoryDTO create(@RequestBody CategoryDTO categoryDTO) {
         return categoryService.createCategory(categoryDTO);
+    }
+
+    @PutMapping
+    public CategoryDTO update(@RequestBody CategoryDTO categoryDTO) {
+        return categoryService.updateCategory(categoryDTO);
     }
 }

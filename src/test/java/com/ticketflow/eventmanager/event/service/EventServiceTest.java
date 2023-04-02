@@ -41,7 +41,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void testCreateEvent() {
+    public void createEvent_ifEventIsValid_ShouldCreateEventSuccessfully() {
         Category category = CategoryTestBuilder.createDefaultCategory();
         when(categoryService.findById(category.getId())).thenReturn(category);
 
