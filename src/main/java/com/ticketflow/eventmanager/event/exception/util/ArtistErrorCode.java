@@ -5,9 +5,10 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum EventErrorCode {
+public enum ArtistErrorCode {
 
-    ;
+    ARTIST_ALREADY_REGISTERED("EVT_ART_ERR_1"),
+    ARTISTS_NOT_FOUND("EVT_ART_ERR_2");
 
     private final String code;
 

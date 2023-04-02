@@ -2,12 +2,17 @@ package com.ticketflow.eventmanager.event.service;
 
 import com.ticketflow.eventmanager.event.controller.dto.ArtistDTO;
 import com.ticketflow.eventmanager.event.exception.EventException;
-import com.ticketflow.eventmanager.event.exception.util.EventErrorCode;
+import com.ticketflow.eventmanager.event.exception.NotFoundException;
+import com.ticketflow.eventmanager.event.exception.util.ArtistErrorCode;
 import com.ticketflow.eventmanager.event.model.Artist;
 import com.ticketflow.eventmanager.event.repository.ArtistRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class ArtistService {
@@ -30,6 +35,18 @@ public class ArtistService {
         return toDTO(artistSaved);
     }
 
+    public List<Artist> findByIds(List<Long> ids) {
+        List<Artist> artists = artistRepository.findAllById(ids);
+
+        if (artists.size() != ids.size()) {
+            Set<Long> notFoundIds = new HashSet<>(ids);
+            artists.forEach(artist -> notFoundIds.remove(artist.getId()));
+            throw new NotFoundException(ArtistErrorCode.ARTISTS_NOT_FOUND.withParams(notFoundIds));
+        }
+
+        return artists;
+    }
+
     private Artist toModel(ArtistDTO artistDTO) {
         return modelMapper.map(artistDTO, Artist.class);
     }
@@ -40,7 +57,7 @@ public class ArtistService {
 
     private void validateArtist(ArtistDTO artistDTO) {
         if (artistRepository.existsByName(artistDTO.getName())) {
-            throw new EventException(EventErrorCode.ARTIST_ALREADY_REGISTERED.withParams(artistDTO.getName()));
+            throw new EventException(ArtistErrorCode.ARTIST_ALREADY_REGISTERED.withParams(artistDTO.getName()));
         }
     }
 }

@@ -5,7 +5,10 @@ import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
 import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
+import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.CategoryRepository;
+import com.ticketflow.eventmanager.event.repository.EventRepository;
+import com.ticketflow.eventmanager.testbuilder.EventTestBuilder;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,6 +21,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.containsString;
@@ -35,16 +40,18 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 class CategoryServiceTest {
 
+    private static final Long CATEGORY_ID = 1L;
     @Mock
     private CategoryRepository categoryRepository;
-
+    @Mock
+    private EventRepository eventRepository;
     private CategoryService categoryService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         ModelMapper modelMapper = new ModelMapper();
-        categoryService = new CategoryService(categoryRepository, modelMapper);
+        categoryService = new CategoryService(categoryRepository, eventRepository, modelMapper);
     }
 
     @Test
@@ -203,4 +210,57 @@ class CategoryServiceTest {
         verify(categoryRepository, never()).save(any(Category.class));
     }
 
+    @Test
+    void deleteCategory_IfCategoryExistsAndIsNotBeingUsedAndExists_ShouldDeleteCategory() {
+        Category category = CategoryTestBuilder.createDefaultCategory();
+
+        when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
+        when(eventRepository.findAllByCategoryId(category.getId())).thenReturn(Collections.emptyList());
+
+        categoryService.deleteCategory(category.getId());
+
+        verify(categoryRepository).delete(category);
+    }
+
+    @Test
+    void deleteCategory_IfCategoryDoesNotExist_ShouldThrowNotFoundException() {
+        when(categoryRepository.findById(CATEGORY_ID)).thenReturn(Optional.empty());
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> categoryService.deleteCategory(CATEGORY_ID));
+
+        MatcherAssert.assertThat(exception.getMessage(), containsString(CategoryErrorCode.CATEGORY_NOT_FOUND.getCode()));
+        MatcherAssert.assertThat(exception.getMessage(), containsString(CATEGORY_ID.toString()));
+
+        verify(categoryRepository, never()).delete(any(Category.class));
+    }
+
+    @Test
+    void deleteCategory_IfCategoryIsBeingUsed_ShouldThrowCategoryException() {
+        Category category = CategoryTestBuilder.createDefaultCategory();
+        Event event = EventTestBuilder.createDefaultEvent();
+        List<Event> events = Collections.singletonList(event);
+
+        when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
+        when(eventRepository.findAllByCategoryId(category.getId())).thenReturn(events);
+
+        CategoryException exception = assertThrows(CategoryException.class,
+                () -> categoryService.deleteCategory(category.getId()));
+
+        MatcherAssert.assertThat(exception.getMessage(), containsString(CategoryErrorCode.CATEGORY_BEING_USED.getCode()));
+        MatcherAssert.assertThat(exception.getMessage(), containsString(category.getId().toString()));
+        MatcherAssert.assertThat(exception.getMessage(), containsString(event.getId().toString()));
+
+        verify(categoryRepository, never()).delete(any(Category.class));
+
+    }
+
+    @Test
+    void checkIfCategoryIdBeingUsed_IfEventsListIsEmpty_ShouldNotThrowException() {
+        when(eventRepository.findAllByCategoryId(CATEGORY_ID)).thenReturn(Collections.emptyList());
+
+        categoryService.checkIfCategoryIdBeingUsed(CATEGORY_ID);
+
+        verify(eventRepository).findAllByCategoryId(CATEGORY_ID);
+    }
 }

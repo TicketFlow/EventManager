@@ -5,27 +5,37 @@ import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
 import com.ticketflow.eventmanager.event.model.Category;
+import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.CategoryRepository;
+import com.ticketflow.eventmanager.event.repository.EventRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
+@Slf4j
 @Service
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
+    private final EventRepository eventRepository;
+
     @Qualifier("modelMapperConfig")
     private final ModelMapper modelMapper;
 
-    public CategoryService(CategoryRepository categoryRepository, ModelMapper modelMapper) {
+    public CategoryService(CategoryRepository categoryRepository, EventRepository eventRepository, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
+        this.eventRepository = eventRepository;
         this.modelMapper = modelMapper;
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        log.info("Criando uma nova categoria {}", categoryDTO.getName());
         validateCategoryCreate(categoryDTO);
         Category category = toModel(categoryDTO);
         Category categorySaved = categoryRepository.save(category);
@@ -34,6 +44,7 @@ public class CategoryService {
     }
 
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
+        log.info("Atualizando a categoria {}", categoryDTO.getId());
         validateCategoryUpdate(categoryDTO);
 
         Category category = findById(categoryDTO.getId());
@@ -43,6 +54,25 @@ public class CategoryService {
         Category updatedCategory = categoryRepository.save(category);
 
         return toDTO(updatedCategory);
+    }
+
+    public void deleteCategory(Long categoryId) {
+        log.info("Excluindo a categoria {}", categoryId);
+        Category category = findById(categoryId);
+        checkIfCategoryIdBeingUsed(categoryId);
+
+        categoryRepository.delete(category);
+    }
+
+    public void checkIfCategoryIdBeingUsed(Long categoryId) {
+        List<Event> events = eventRepository.findAllByCategoryId(categoryId);
+
+        if (!events.isEmpty()) {
+            List<Long> eventIds = new ArrayList<>();
+            events.forEach(event -> eventIds.add(event.getId()));
+
+            throw new CategoryException(CategoryErrorCode.CATEGORY_BEING_USED.withParams(categoryId, eventIds));
+        }
     }
 
     private void updateCategoryFields(CategoryDTO categoryDTO, Category category) {

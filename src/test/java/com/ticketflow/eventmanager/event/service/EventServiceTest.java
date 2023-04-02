@@ -31,13 +31,16 @@ public class EventServiceTest {
     @Mock
     private CategoryService categoryService;
 
+    @Mock
+    private ArtistService artistService;
+
     private EventService eventService;
 
     @BeforeEach
     public void setup() {
         MockitoAnnotations.openMocks(this);
         ModelMapper modelMapper = new ModelMapper();
-        eventService = new EventService(eventRepository, categoryService, modelMapper);
+        eventService = new EventService(eventRepository, categoryService, artistService, modelMapper);
     }
 
     @Test
