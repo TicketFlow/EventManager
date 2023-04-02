@@ -70,6 +70,4 @@ class EventControllerTest {
 
         verify(eventService).createEvent(any(CreateEventDTO.class));
     }
-
-
 }

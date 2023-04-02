@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -23,6 +24,7 @@ import static org.mockito.Mockito.times;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,23 +46,28 @@ class ArtistControllerTest {
     }
 
     @Test
-    void createArtist_ShouldReturnCreatedArtistDTO() throws Exception {
+    void createArtist_shouldReturnCreatedArtistDTO() throws Exception {
         ArtistDTO artistDTO = ArtistTestBuilder.createDefaultArtistDTO();
+        ArtistDTO expectedArtistDTO = ArtistTestBuilder.createDefaultArtistDTO();
 
-        ArtistDTO createdArtistDTO = ArtistTestBuilder.init()
-                .buildDTOWithDefaultValues()
-                .build();
+        when(artistService.createArtist(any(ArtistDTO.class))).thenReturn(expectedArtistDTO);
 
-        when(artistService.createArtist(any(ArtistDTO.class))).thenReturn(createdArtistDTO);
-
-        mockMvc.perform(post("/artist")
+        ObjectMapper objectMapper = new ObjectMapper();
+        MvcResult mvcResult = mockMvc.perform(post("/artist")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(new ObjectMapper().writeValueAsString(artistDTO)))
+                        .content(objectMapper.writeValueAsString(artistDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", is(1)))
-                .andExpect(jsonPath("$.name", is(artistDTO.getName())))
-                .andExpect(jsonPath("$.gender", is(artistDTO.getGender())));
+                .andReturn();
 
-        verify(artistService, times(1)).createArtist(any(ArtistDTO.class));
+        String jsonResponse = mvcResult.getResponse().getContentAsString();
+        ArtistDTO actualArtistDTO = objectMapper.readValue(jsonResponse, ArtistDTO.class);
+
+        assertThat(actualArtistDTO)
+                .usingRecursiveComparison()
+                .isEqualTo(expectedArtistDTO);
+
+        assertThat(actualArtistDTO.getId()).isNotNull();
+
+        verify(artistService).createArtist(any(ArtistDTO.class));
     }
 }
