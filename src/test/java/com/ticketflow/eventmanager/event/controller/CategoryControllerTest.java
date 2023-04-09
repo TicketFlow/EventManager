@@ -1,5 +1,6 @@
 package com.ticketflow.eventmanager.event.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
 import com.ticketflow.eventmanager.event.service.CategoryService;
@@ -16,13 +17,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 
 @ExtendWith(MockitoExtension.class)
 class CategoryControllerTest {
@@ -41,6 +47,34 @@ class CategoryControllerTest {
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
                 .build();
     }
+
+    @Test
+    void getAll_shouldReturnListOfCategoryDTO() throws Exception {
+        CategoryDTO categoryDTO1 = CategoryTestBuilder.init()
+                .buildDTOWithDefaultValues()
+                .id(1L)
+                .build();
+
+        CategoryDTO categoryDTO2 = CategoryTestBuilder.init()
+                .buildDTOWithDefaultValues()
+                .id(2L)
+                .build();
+
+        List<CategoryDTO> expectedCategoryDTOs = Arrays.asList(categoryDTO1, categoryDTO2);
+
+        when(categoryService.getAll()).thenReturn(expectedCategoryDTOs);
+
+        MvcResult result = mockMvc.perform(get("/category"))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        List<CategoryDTO> actualCategoryDTOs = objectMapper.readValue(jsonResponse, new TypeReference<>() {});
+
+        assertThat(actualCategoryDTOs).usingRecursiveComparison().isEqualTo(expectedCategoryDTOs);
+        verify(categoryService).getAll();
+    }
+
 
     @Test
     void create_shouldReturnCreatedCategoryDTO() throws Exception {

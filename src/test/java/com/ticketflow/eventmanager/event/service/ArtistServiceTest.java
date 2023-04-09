@@ -46,7 +46,7 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void createArtist_ifArtistIsValid_ShouldCreateArtistSuccessfully() {
+    void createArtist_ifArtistIsValid_ShouldCreateArtistSuccessfully() {
         ArtistDTO artistDTO = ArtistTestBuilder.createDefaultArtistDTO();
         Artist artistToSave = ArtistTestBuilder.createDefaultArtist();
         Artist artistSaved = ArtistTestBuilder.createDefaultArtist();
@@ -61,7 +61,7 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void createArtist_IfArtistAlreadyRegistered_ShouldThrowException() {
+    void createArtist_IfArtistAlreadyRegistered_ShouldThrowException() {
         ArtistDTO artistDTO = ArtistTestBuilder.createDefaultArtistDTO();
 
         when(artistRepository.existsByName(artistDTO.getName())).thenReturn(true);
@@ -76,7 +76,7 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void findByIds_ShouldReturnListOfArtists() {
+    void findByIds_ShouldReturnListOfArtists() {
         List<Long> artistIds = new ArrayList<>();
         artistIds.add(1L);
         artistIds.add(2L);
@@ -102,7 +102,7 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void findByIds_WhenAnArtistDoesNotExist_ThrowNotFoundException() {
+    void findByIds_WhenAnArtistDoesNotExist_ThrowNotFoundException() {
         List<Long> artistIds = new ArrayList<>();
         artistIds.add(1L);
         artistIds.add(2L);
@@ -120,7 +120,7 @@ public class ArtistServiceTest {
     }
 
     @Test
-    public void findByIds_ShouldThrowNotFoundException_WhenNoArtistsFound() {
+    void findByIds_ShouldThrowNotFoundException_WhenNoArtistsFound() {
         List<Long> artistIds = new ArrayList<>();
         artistIds.add(1L);
         artistIds.add(2L);

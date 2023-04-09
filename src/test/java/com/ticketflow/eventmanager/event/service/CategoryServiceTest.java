@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -40,18 +41,35 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 class CategoryServiceTest {
 
-    private static final Long CATEGORY_ID = 1L;
     @Mock
     private CategoryRepository categoryRepository;
+
     @Mock
     private EventRepository eventRepository;
+
     private CategoryService categoryService;
+
+    private static final Long CATEGORY_ID = 1L;
+
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         ModelMapper modelMapper = new ModelMapper();
         categoryService = new CategoryService(categoryRepository, eventRepository, modelMapper);
+    }
+
+    @Test
+    void getAll_shouldReturnListOfCategoryDTO() {
+        List<Category> categoryList = mountCategoryEntityList();
+        List<CategoryDTO> expectedCategoryDTOList = mountCategoryListDTO();
+
+        when(categoryRepository.findAll()).thenReturn(categoryList);
+
+        List<CategoryDTO> actualCategoryDTOList = categoryService.getAll();
+
+        assertThat(actualCategoryDTOList).usingRecursiveComparison().isEqualTo(expectedCategoryDTOList);
+        verify(categoryRepository).findAll();
     }
 
     @Test
@@ -263,4 +281,33 @@ class CategoryServiceTest {
 
         verify(eventRepository).findAllByCategoryId(CATEGORY_ID);
     }
+
+    private List<Category> mountCategoryEntityList() {
+        Category category1 = CategoryTestBuilder.init()
+                .buildModelWithDefaultValues()
+                .id(1L)
+                .build();
+
+        Category category2 = CategoryTestBuilder.init()
+                .buildModelWithDefaultValues()
+                .id(2L)
+                .build();
+
+        return List.of(category1, category2);
+    }
+
+    private List<CategoryDTO> mountCategoryListDTO() {
+        CategoryDTO categoryDTO1 = CategoryTestBuilder.init()
+                .buildDTOWithDefaultValues()
+                .id(1L)
+                .build();
+
+        CategoryDTO categoryDTO2 = CategoryTestBuilder.init()
+                .buildDTOWithDefaultValues()
+                .id(2L)
+                .build();
+
+        return List.of(categoryDTO1, categoryDTO2);
+    }
+
 }

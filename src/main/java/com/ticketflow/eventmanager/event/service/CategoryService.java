@@ -34,6 +34,13 @@ public class CategoryService {
         this.modelMapper = modelMapper;
     }
 
+    public List<CategoryDTO> getAll() {
+        return categoryRepository.findAll()
+                .stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         log.info("Criando uma nova categoria {}", categoryDTO.getName());
         validateCategoryCreate(categoryDTO);

@@ -17,15 +17,15 @@ public class ArtistTestBuilder {
         return new ArtistTestBuilder();
     }
 
-    public static Artist createDefaultArtist() {
-        return init()
-                .buildModelWithDefaultValues()
-                .build();
-    }
-
     public static ArtistDTO createDefaultArtistDTO() {
         return init()
                 .buildDTOWithDefaultValues()
+                .build();
+    }
+
+    public static Artist createDefaultArtist() {
+        return init()
+                .buildModelWithDefaultValues()
                 .build();
     }
 
