@@ -25,12 +25,15 @@ public class CategoryService {
 
     private final EventRepository eventRepository;
 
+    private final UserService userService;
+
     @Qualifier("modelMapperConfig")
     private final ModelMapper modelMapper;
 
-    public CategoryService(CategoryRepository categoryRepository, EventRepository eventRepository, ModelMapper modelMapper) {
+    public CategoryService(CategoryRepository categoryRepository, EventRepository eventRepository, UserService authenticatedUserService, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
         this.eventRepository = eventRepository;
+        this.userService = authenticatedUserService;
         this.modelMapper = modelMapper;
     }
 
@@ -44,27 +47,26 @@ public class CategoryService {
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         log.info("Criando uma nova categoria {}", categoryDTO.getName());
         validateCategoryCreate(categoryDTO);
-        Category category = toModel(categoryDTO);
-        Category categorySaved = categoryRepository.save(category);
+        categoryDTO.setOwner(userService.getCurrentUserId());
 
-        return toDTO(categorySaved);
+        Category category = toModel(categoryDTO);
+        return saveAndConvertToDTO(category);
     }
+
 
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
         log.info("Atualizando a categoria {}", categoryDTO.getId());
         validateCategoryUpdate(categoryDTO);
 
         Category category = findById(categoryDTO.getId());
-
         updateCategoryFields(categoryDTO, category);
 
-        Category updatedCategory = categoryRepository.save(category);
-
-        return toDTO(updatedCategory);
+        return saveAndConvertToDTO(category);
     }
 
     public void deleteCategory(Long categoryId) {
         log.info("Excluindo a categoria {}", categoryId);
+
         Category category = findById(categoryId);
         checkIfCategoryIdBeingUsed(categoryId);
 
@@ -80,6 +82,11 @@ public class CategoryService {
 
             throw new CategoryException(CategoryErrorCode.CATEGORY_BEING_USED.withParams(categoryId, eventIds));
         }
+    }
+
+    public Category findById(Long id) {
+        return categoryRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(CategoryErrorCode.CATEGORY_NOT_FOUND.withParams(id)));
     }
 
     private void updateCategoryFields(CategoryDTO categoryDTO, Category category) {
@@ -116,9 +123,9 @@ public class CategoryService {
         }
     }
 
-    public Category findById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(CategoryErrorCode.CATEGORY_NOT_FOUND.withParams(id)));
+    private CategoryDTO saveAndConvertToDTO(Category categoryDTO) {
+        Category categorySaved = categoryRepository.save(categoryDTO);
+        return toDTO(categorySaved);
     }
 
     private Category toModel(CategoryDTO categoryDTO) {

@@ -5,21 +5,20 @@ import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
 import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
+import com.ticketflow.eventmanager.event.model.Category;
 import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.CategoryRepository;
 import com.ticketflow.eventmanager.event.repository.EventRepository;
+import com.ticketflow.eventmanager.testbuilder.CategoryTestBuilder;
 import com.ticketflow.eventmanager.testbuilder.EventTestBuilder;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-
-import com.ticketflow.eventmanager.event.model.Category;
-import com.ticketflow.eventmanager.testbuilder.CategoryTestBuilder;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,22 +40,21 @@ import static org.mockito.Mockito.when;
 @ActiveProfiles("test")
 class CategoryServiceTest {
 
+    private static final Long CATEGORY_ID = 1L;
     @Mock
     private CategoryRepository categoryRepository;
-
     @Mock
     private EventRepository eventRepository;
 
+    @Mock
+    private UserService userService;
     private CategoryService categoryService;
-
-    private static final Long CATEGORY_ID = 1L;
-
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         ModelMapper modelMapper = new ModelMapper();
-        categoryService = new CategoryService(categoryRepository, eventRepository, modelMapper);
+        categoryService = new CategoryService(categoryRepository, eventRepository, userService, modelMapper);
     }
 
     @Test
@@ -82,6 +80,7 @@ class CategoryServiceTest {
 
         when(categoryRepository.findByName(categoryDTO.getName())).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
+        when(userService.getCurrentUserId()).thenReturn("userId");
 
         CategoryDTO result = categoryService.createCategory(categoryDTO);
 

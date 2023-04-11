@@ -18,4 +18,6 @@ public class CategoryDTO {
     private String description;
 
     private String ageGroup;
+
+    private String owner;
 }
