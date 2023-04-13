@@ -7,6 +7,7 @@ import com.ticketflow.eventmanager.event.exception.util.ArtistErrorCode;
 import com.ticketflow.eventmanager.event.model.Artist;
 import com.ticketflow.eventmanager.event.repository.ArtistRepository;
 import com.ticketflow.eventmanager.testbuilder.ArtistTestBuilder;
+import com.ticketflow.eventmanager.utils.GlobalTestConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
@@ -31,7 +33,8 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ArtistServiceTest {
+@Import(GlobalTestConfiguration.class)
+class ArtistServiceTest {
 
     @Mock
     private ArtistRepository artistRepository;

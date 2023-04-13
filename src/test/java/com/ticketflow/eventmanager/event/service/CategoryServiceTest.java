@@ -11,6 +11,7 @@ import com.ticketflow.eventmanager.event.repository.CategoryRepository;
 import com.ticketflow.eventmanager.event.repository.EventRepository;
 import com.ticketflow.eventmanager.testbuilder.CategoryTestBuilder;
 import com.ticketflow.eventmanager.testbuilder.EventTestBuilder;
+import com.ticketflow.eventmanager.utils.GlobalTestConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -36,25 +38,27 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(GlobalTestConfiguration.class)
 class CategoryServiceTest {
 
     private static final Long CATEGORY_ID = 1L;
+    private static final String USER_ID = "userId";
     @Mock
     private CategoryRepository categoryRepository;
     @Mock
     private EventRepository eventRepository;
-
     @Mock
-    private UserService userService;
+    private JwtUserAuthenticationService jwtUserAuthenticationService;
     private CategoryService categoryService;
 
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.openMocks(this);
         ModelMapper modelMapper = new ModelMapper();
-        categoryService = new CategoryService(categoryRepository, eventRepository, userService, modelMapper);
+        categoryService = new CategoryService(categoryRepository, eventRepository, jwtUserAuthenticationService, modelMapper);
     }
 
     @Test
@@ -76,12 +80,19 @@ class CategoryServiceTest {
 
         Category category = CategoryTestBuilder.init()
                 .buildModelWithDefaultValues()
+                .owner(null)
                 .build();
 
-        when(categoryRepository.findByName(categoryDTO.getName())).thenReturn(category);
-        when(categoryRepository.save(category)).thenReturn(category);
-        when(userService.getCurrentUserId()).thenReturn("userId");
 
+        when(categoryRepository.findByName(categoryDTO.getName())).thenReturn(category);
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(USER_ID);
+        when(categoryRepository.save(any(Category.class))).thenAnswer(invocation -> {
+            Category savedCategory = invocation.getArgument(0);
+            validateCategoryFields(categoryDTO, savedCategory);
+
+            savedCategory.setId(category.getId());
+            return savedCategory;
+        });
         CategoryDTO result = categoryService.createCategory(categoryDTO);
 
         assertNotNull(result);
@@ -91,6 +102,12 @@ class CategoryServiceTest {
         assertEquals(categoryDTO.getAgeGroup(), result.getAgeGroup());
     }
 
+    private void validateCategoryFields(CategoryDTO categoryDTO, Category savedCategory) {
+        assertThat(savedCategory.getOwner()).isEqualTo(USER_ID);
+        assertThat(savedCategory.getName()).isEqualTo(categoryDTO.getName());
+        assertThat(savedCategory.getDescription()).isEqualTo(categoryDTO.getDescription());
+        assertThat(savedCategory.getAgeGroup()).isEqualTo(categoryDTO.getAgeGroup());
+    }
 
     @Test
     void findById_IfCategoryExists_ShouldReturnCategory() {

@@ -19,7 +19,6 @@ public abstract class ConfigException extends RuntimeException {
 
     @Override
     public String getMessage() {
-
         StringBuilder suffix = new StringBuilder();
         if (errorCode != null && ArrayUtils.isNotEmpty(errorCode.parameters())) {
             suffix.append(" - ");

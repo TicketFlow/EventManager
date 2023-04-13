@@ -25,15 +25,15 @@ public class CategoryService {
 
     private final EventRepository eventRepository;
 
-    private final UserService userService;
+    private final JwtUserAuthenticationService jwtUserAuthenticationService;
 
     @Qualifier("modelMapperConfig")
     private final ModelMapper modelMapper;
 
-    public CategoryService(CategoryRepository categoryRepository, EventRepository eventRepository, UserService authenticatedUserService, ModelMapper modelMapper) {
+    public CategoryService(CategoryRepository categoryRepository, EventRepository eventRepository, JwtUserAuthenticationService authenticatedJwtUserAuthenticationService, ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
         this.eventRepository = eventRepository;
-        this.userService = authenticatedUserService;
+        this.jwtUserAuthenticationService = authenticatedJwtUserAuthenticationService;
         this.modelMapper = modelMapper;
     }
 
@@ -47,7 +47,7 @@ public class CategoryService {
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
         log.info("Criando uma nova categoria {}", categoryDTO.getName());
         validateCategoryCreate(categoryDTO);
-        categoryDTO.setOwner(userService.getCurrentUserId());
+        categoryDTO.setOwner(jwtUserAuthenticationService.getCurrentUserId());
 
         Category category = toModel(categoryDTO);
         return saveAndConvertToDTO(category);
@@ -123,8 +123,8 @@ public class CategoryService {
         }
     }
 
-    private CategoryDTO saveAndConvertToDTO(Category categoryDTO) {
-        Category categorySaved = categoryRepository.save(categoryDTO);
+    private CategoryDTO saveAndConvertToDTO(Category category) {
+        Category categorySaved = categoryRepository.save(category);
         return toDTO(categorySaved);
     }
 

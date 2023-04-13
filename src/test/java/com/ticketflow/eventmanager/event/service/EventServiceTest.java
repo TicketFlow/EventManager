@@ -7,12 +7,14 @@ import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.EventRepository;
 import com.ticketflow.eventmanager.testbuilder.CategoryTestBuilder;
 import com.ticketflow.eventmanager.testbuilder.EventTestBuilder;
+import com.ticketflow.eventmanager.utils.GlobalTestConfiguration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,7 +25,8 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class EventServiceTest {
+@Import(GlobalTestConfiguration.class)
+class EventServiceTest {
 
     @Mock
     private EventRepository eventRepository;
@@ -44,7 +47,7 @@ public class EventServiceTest {
     }
 
     @Test
-    public void createEvent_ifEventIsValid_ShouldCreateEventSuccessfully() {
+    void createEvent_ifEventIsValid_ShouldCreateEventSuccessfully() {
         Category category = CategoryTestBuilder.createDefaultCategory();
         when(categoryService.findById(category.getId())).thenReturn(category);
 

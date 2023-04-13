@@ -9,7 +9,8 @@ public enum GeneralErrorCode {
 
     INVALID_DATE_FORMAT("CPM_GNRL_ERR_1"),
     ILLEGAL_ARGUMENT_ERROR("CPM_GNRL_ERR_2"),
-    BAD_REQUEST_ERROR("CPM_GNRL_ERR_3");
+    BAD_REQUEST_ERROR("CPM_GNRL_ERR_3"),
+    ACCESS_DENIED_ERROR("CPM_GNRL_ERR_4");
 
     private final String code;
 

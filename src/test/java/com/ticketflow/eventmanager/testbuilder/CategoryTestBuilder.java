@@ -12,6 +12,7 @@ public class CategoryTestBuilder {
     private static final String DESCRIPTION = "Example Description";
 
     private static final String AGE_GROUP = "Example Age Group";
+    private static final String owner = "UserId";
 
     public static CategoryTestBuilder init() {
         return new CategoryTestBuilder();
@@ -34,6 +35,7 @@ public class CategoryTestBuilder {
                 .id(ID)
                 .name(NAME)
                 .description(DESCRIPTION)
+                .owner(owner)
                 .ageGroup(AGE_GROUP);
     }
 
@@ -42,6 +44,7 @@ public class CategoryTestBuilder {
                 .id(ID)
                 .name(NAME)
                 .description(DESCRIPTION)
+                .owner(owner)
                 .ageGroup(AGE_GROUP);
     }
 
