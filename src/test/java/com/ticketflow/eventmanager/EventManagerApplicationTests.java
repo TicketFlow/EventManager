@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 
 @SpringBootTest
 @Import(GlobalTestConfiguration.class)
-class EventmanagerApplicationTests {
+class EventManagerApplicationTests {
 
     @Test
     void contextLoads() {

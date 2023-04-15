@@ -45,7 +45,7 @@ public class CategoryService {
     }
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO) {
-        log.info("Criando uma nova categoria {}", categoryDTO.getName());
+        log.info("Creating new category {}", categoryDTO.getName());
         validateCategoryCreate(categoryDTO);
         categoryDTO.setOwner(jwtUserAuthenticationService.getCurrentUserId());
 
@@ -55,7 +55,7 @@ public class CategoryService {
 
 
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
-        log.info("Atualizando a categoria {}", categoryDTO.getId());
+        log.info("Updating category {}", categoryDTO.getId());
         validateCategoryUpdate(categoryDTO);
 
         Category category = findById(categoryDTO.getId());
@@ -65,7 +65,7 @@ public class CategoryService {
     }
 
     public void deleteCategory(Long categoryId) {
-        log.info("Excluindo a categoria {}", categoryId);
+        log.info("Deleting category {}", categoryId);
 
         Category category = findById(categoryId);
         checkIfCategoryIdBeingUsed(categoryId);

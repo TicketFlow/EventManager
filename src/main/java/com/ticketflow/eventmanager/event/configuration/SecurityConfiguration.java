@@ -1,6 +1,5 @@
 package com.ticketflow.eventmanager.event.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,10 +19,12 @@ public class SecurityConfiguration {
     private static final String ROLE_USER = "user";
     private static final String ROLE_EVENT_MANAGER = "event_manager";
 
-    @Autowired
-    private RESTAuthenticationEntryPoint customAuthenticationFailure;
+    private final RESTAuthenticationEntryPoint customAuthenticationFailure;
 
-
+    public SecurityConfiguration(RESTAuthenticationEntryPoint customAuthenticationFailure) {
+        this.customAuthenticationFailure = customAuthenticationFailure;
+    }
+    
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
