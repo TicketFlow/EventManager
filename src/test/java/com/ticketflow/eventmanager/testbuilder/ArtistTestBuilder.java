@@ -7,11 +7,11 @@ public class ArtistTestBuilder {
 
     private static final Long ID = 1L;
 
-    private static final String NAME = "Example Name";
+    private static final String NAME = "ArtistName";
 
-    private static final String TYPE = "Example Type";
+    private static final String TYPE = "Type";
 
-    private static final String GENDER = "Example Gender";
+    private static final String GENDER = "Gender";
 
     public static ArtistTestBuilder init() {
         return new ArtistTestBuilder();
