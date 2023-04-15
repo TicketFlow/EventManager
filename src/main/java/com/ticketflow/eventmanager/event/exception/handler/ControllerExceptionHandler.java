@@ -28,6 +28,8 @@ public class ControllerExceptionHandler {
     @Autowired
     private final JwtUserAuthenticationService jwtUserAuthenticationService;
 
+    private static final String LOG_ERROR_STRING = "ErrorCode {}";
+
 
     @ExceptionHandler(EventException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -36,7 +38,7 @@ public class ControllerExceptionHandler {
         String code = errorCode.code();
         String message = resolveErrorMessage(code, errorCode.parameters());
 
-        log.error("Error errorCode {}", ex.getMessage(), ex);
+        log.error(LOG_ERROR_STRING, ex.getMessage(), ex);
 
         return new ErrorMessage(code, message);
     }
@@ -48,7 +50,7 @@ public class ControllerExceptionHandler {
         String code = errorCode.code();
         String message = resolveErrorMessage(code, errorCode.parameters());
 
-        log.error("Error errorCode {}", ex.getMessage(), ex);
+        log.error(LOG_ERROR_STRING, ex.getMessage(), ex);
 
         return new ErrorMessage(code, message);
     }
@@ -60,7 +62,7 @@ public class ControllerExceptionHandler {
         String code = errorCode.code();
         String message = resolveErrorMessage(code, errorCode.parameters());
 
-        log.error("Error errorCode {}", ex.getMessage(), ex);
+        log.error(LOG_ERROR_STRING, ex.getMessage(), ex);
 
         return new ErrorMessage(code, message);
     }
