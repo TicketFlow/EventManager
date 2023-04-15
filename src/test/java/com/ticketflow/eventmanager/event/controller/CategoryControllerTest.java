@@ -3,6 +3,7 @@ package com.ticketflow.eventmanager.event.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
+import com.ticketflow.eventmanager.event.controller.filter.CategoryFilter;
 import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.handler.ControllerExceptionHandler;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
@@ -81,21 +82,30 @@ class CategoryControllerTest {
 
     @Test
     void getAll_shouldReturnListOfCategoryDTO() throws Exception {
-        CategoryDTO categoryDTO1 = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO1 = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .id(1L)
                 .build();
 
-        CategoryDTO categoryDTO2 = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO2 = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .id(2L)
                 .build();
 
         List<CategoryDTO> expectedCategoryDTOs = Arrays.asList(categoryDTO1, categoryDTO2);
 
-        when(categoryService.getAll()).thenReturn(expectedCategoryDTOs);
+        CategoryFilter categoryFilter = CategoryTestBuilder
+                .buildCategoryFilterWithDefaultValues()
+                .id(null)
+                .description(null)
+                .build();
 
-        MvcResult result = mockMvc.perform(get("/category"))
+        when(categoryService.getAll(categoryFilter)).thenReturn(expectedCategoryDTOs);
+
+        MvcResult result = mockMvc.perform(get("/category")
+                        .param("name", categoryFilter.getName())
+                        .param("ageGroup", categoryFilter.getAgeGroup())
+                        .param("owner", categoryFilter.getOwner()))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -104,7 +114,7 @@ class CategoryControllerTest {
         });
 
         assertThat(actualCategoryDTOs).usingRecursiveComparison().isEqualTo(expectedCategoryDTOs);
-        verify(categoryService).getAll();
+        verify(categoryService).getAll(any(CategoryFilter.class));
     }
 
 
@@ -154,7 +164,7 @@ class CategoryControllerTest {
     @Test
     void update_shouldUpdateCategory() throws Exception {
         CategoryDTO categoryDTO = CategoryTestBuilder.createDefaultCategoryDTO();
-        CategoryDTO expectedCategoryDTO = CategoryTestBuilder.init()
+        CategoryDTO expectedCategoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .name("New name")
                 .build();
@@ -177,7 +187,7 @@ class CategoryControllerTest {
     @Test
     void update_shouldThrowCategoryException_categoryIdRequired() throws Exception {
         CategoryDTO categoryDTO = CategoryTestBuilder.createDefaultCategoryDTO();
-        CategoryDTO expectedCategoryDTO = CategoryTestBuilder.init()
+        CategoryDTO expectedCategoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .name("New name")
                 .build();
@@ -235,7 +245,7 @@ class CategoryControllerTest {
         Long categoryId = 5L;
 
         List<Event> events = new ArrayList<>();
-        Event event = EventTestBuilder.init()
+        Event event = EventTestBuilder
                 .buildModelWithDefaultValues()
                 .build();
         events.add(event);
@@ -267,7 +277,7 @@ class CategoryControllerTest {
         Long categoryId = 5L;
 
         List<Event> events = new ArrayList<>();
-        Event event = EventTestBuilder.init()
+        Event event = EventTestBuilder
                 .buildModelWithDefaultValues()
                 .build();
         events.add(event);

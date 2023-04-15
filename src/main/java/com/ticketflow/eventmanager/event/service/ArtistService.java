@@ -1,7 +1,7 @@
 package com.ticketflow.eventmanager.event.service;
 
 import com.ticketflow.eventmanager.event.controller.dto.ArtistDTO;
-import com.ticketflow.eventmanager.event.exception.ArtistExeption;
+import com.ticketflow.eventmanager.event.exception.ArtistException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.ArtistErrorCode;
 import com.ticketflow.eventmanager.event.model.Artist;
@@ -57,7 +57,7 @@ public class ArtistService {
 
     private void validateArtist(ArtistDTO artistDTO) {
         if (artistRepository.existsByName(artistDTO.getName())) {
-            throw new ArtistExeption(ArtistErrorCode.ARTIST_ALREADY_REGISTERED.withParams(artistDTO.getName()));
+            throw new ArtistException(ArtistErrorCode.ARTIST_ALREADY_REGISTERED.withParams(artistDTO.getName()));
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.ticketflow.eventmanager.event.service;
 
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
+import com.ticketflow.eventmanager.event.controller.filter.CategoryFilter;
 import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
@@ -8,9 +9,11 @@ import com.ticketflow.eventmanager.event.model.Category;
 import com.ticketflow.eventmanager.event.model.Event;
 import com.ticketflow.eventmanager.event.repository.CategoryRepository;
 import com.ticketflow.eventmanager.event.repository.EventRepository;
+import com.ticketflow.eventmanager.event.repository.specification.CategorySpecification;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -37,8 +40,9 @@ public class CategoryService {
         this.modelMapper = modelMapper;
     }
 
-    public List<CategoryDTO> getAll() {
-        return categoryRepository.findAll()
+    public List<CategoryDTO> getAll(CategoryFilter categoryFilter) {
+        Specification<Category> spec = CategorySpecification.withFilter(categoryFilter);
+        return categoryRepository.findAll(spec)
                 .stream()
                 .map(this::toDTO)
                 .toList();

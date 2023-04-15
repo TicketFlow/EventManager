@@ -1,6 +1,7 @@
 package com.ticketflow.eventmanager.testbuilder;
 
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
+import com.ticketflow.eventmanager.event.controller.filter.CategoryFilter;
 import com.ticketflow.eventmanager.event.model.Category;
 
 public class CategoryTestBuilder {
@@ -14,23 +15,18 @@ public class CategoryTestBuilder {
     private static final String AGE_GROUP = "Example Age Group";
     private static final String owner = "1";
 
-    public static CategoryTestBuilder init() {
-        return new CategoryTestBuilder();
-    }
 
     public static Category createDefaultCategory() {
-        return init()
-                .buildModelWithDefaultValues()
+        return buildModelWithDefaultValues()
                 .build();
     }
 
     public static CategoryDTO createDefaultCategoryDTO() {
-        return init()
-                .buildDTOWithDefaultValues()
+        return buildDTOWithDefaultValues()
                 .build();
     }
 
-    public Category.CategoryBuilder buildModelWithDefaultValues() {
+    public static Category.CategoryBuilder buildModelWithDefaultValues() {
         return Category.builder()
                 .id(ID)
                 .name(NAME)
@@ -39,13 +35,23 @@ public class CategoryTestBuilder {
                 .ageGroup(AGE_GROUP);
     }
 
-    public CategoryDTO.CategoryDTOBuilder buildDTOWithDefaultValues() {
+    public static CategoryDTO.CategoryDTOBuilder buildDTOWithDefaultValues() {
         return CategoryDTO.builder()
                 .id(ID)
                 .name(NAME)
                 .description(DESCRIPTION)
                 .owner(owner)
                 .ageGroup(AGE_GROUP);
+    }
+
+    public static CategoryFilter.CategoryFilterBuilder buildCategoryFilterWithDefaultValues() {
+        return CategoryFilter.builder()
+                .id(ID)
+                .name(NAME)
+                .description(DESCRIPTION)
+                .owner(owner)
+                .ageGroup(AGE_GROUP);
+
     }
 
 }

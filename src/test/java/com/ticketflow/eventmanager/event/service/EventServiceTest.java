@@ -51,14 +51,14 @@ class EventServiceTest {
         Category category = CategoryTestBuilder.createDefaultCategory();
         when(categoryService.findById(category.getId())).thenReturn(category);
 
-        Event event = EventTestBuilder.init()
+        Event event = EventTestBuilder
                 .buildModelWithDefaultValues()
                 .category(category)
                 .build();
 
         when(eventRepository.save(any(Event.class))).thenReturn(event);
 
-        CreateEventDTO createEventDTO = EventTestBuilder.init()
+        CreateEventDTO createEventDTO = EventTestBuilder
                 .buildCreateDTOWithDefaultValues()
                 .categoryId(category.getId())
                 .build();

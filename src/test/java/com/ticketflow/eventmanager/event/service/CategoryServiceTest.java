@@ -2,6 +2,7 @@ package com.ticketflow.eventmanager.event.service;
 
 
 import com.ticketflow.eventmanager.event.controller.dto.CategoryDTO;
+import com.ticketflow.eventmanager.event.controller.filter.CategoryFilter;
 import com.ticketflow.eventmanager.event.exception.CategoryException;
 import com.ticketflow.eventmanager.event.exception.NotFoundException;
 import com.ticketflow.eventmanager.event.exception.util.CategoryErrorCode;
@@ -15,11 +16,13 @@ import com.ticketflow.eventmanager.utils.GlobalTestConfiguration;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Collections;
@@ -66,19 +69,25 @@ class CategoryServiceTest {
         List<Category> categoryList = mountCategoryEntityList();
         List<CategoryDTO> expectedCategoryDTOList = mountCategoryListDTO();
 
-        when(categoryRepository.findAll()).thenReturn(categoryList);
+        CategoryFilter categoryFilter = CategoryTestBuilder
+                .buildCategoryFilterWithDefaultValues()
+                .build();
 
-        List<CategoryDTO> actualCategoryDTOList = categoryService.getAll();
+        when(categoryRepository.findAll(ArgumentMatchers.<Specification<Category>>any())).thenReturn(categoryList);
+
+        List<CategoryDTO> actualCategoryDTOList = categoryService.getAll(categoryFilter);
 
         assertThat(actualCategoryDTOList).usingRecursiveComparison().isEqualTo(expectedCategoryDTOList);
-        verify(categoryRepository).findAll();
+
+        verify(categoryRepository).findAll(ArgumentMatchers.<Specification<Category>>any());
+
     }
 
     @Test
     void createCategory_IfCategoryIsValid_ShouldCreateCategory() {
         CategoryDTO categoryDTO = CategoryTestBuilder.createDefaultCategoryDTO();
 
-        Category category = CategoryTestBuilder.init()
+        Category category = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .owner(null)
                 .build();
@@ -112,7 +121,7 @@ class CategoryServiceTest {
     @Test
     void findById_IfCategoryExists_ShouldReturnCategory() {
         Long categoryId = 1L;
-        Category category = CategoryTestBuilder.init()
+        Category category = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .id(categoryId)
                 .build();
@@ -141,7 +150,7 @@ class CategoryServiceTest {
     void updateCategory_ifCategoryExists_ShouldUpdateCategory() {
         Category category = CategoryTestBuilder.createDefaultCategory();
 
-        CategoryDTO categoryDTO = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .description("New description")
                 .name("New name")
@@ -149,7 +158,7 @@ class CategoryServiceTest {
                 .owner("1")
                 .build();
 
-        Category categorySaved = CategoryTestBuilder.init()
+        Category categorySaved = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .description("New description")
                 .name("New name")
@@ -176,7 +185,7 @@ class CategoryServiceTest {
     void updateCategory_withDifferentOwner_ShouldThrowCategoryException() {
         Category category = CategoryTestBuilder.createDefaultCategory();
 
-        CategoryDTO categoryDTO = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .description("New description")
                 .name("New name")
@@ -197,17 +206,17 @@ class CategoryServiceTest {
 
 
     @Test
-    void updateCategory_WithEmptyfields_IfCategoryExists_ShouldUpdateCategory() {
+    void updateCategory_WithEmptyFields_IfCategoryExists_ShouldUpdateCategory() {
         Category category = CategoryTestBuilder.createDefaultCategory();
 
-        CategoryDTO categoryDTO = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .description("")
                 .name("")
                 .ageGroup("")
                 .build();
 
-        Category categorySaved = CategoryTestBuilder.init()
+        Category categorySaved = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .build();
 
@@ -228,7 +237,7 @@ class CategoryServiceTest {
     @Test
     void createCategory_IfCategoryNameIsDuplicatedAndCategoryIdIsDifferent_ShouldThrowCategoryException() {
         CategoryDTO categoryDTO = CategoryTestBuilder.createDefaultCategoryDTO();
-        Category category = CategoryTestBuilder.init()
+        Category category = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .id(50L)
                 .build();
@@ -246,7 +255,7 @@ class CategoryServiceTest {
 
     @Test
     void updateCategory_IfCategoryIdIsNull_ShouldThrowCategoryException() {
-        CategoryDTO categoryDTO = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .id(null)
                 .build();
@@ -329,13 +338,14 @@ class CategoryServiceTest {
         verify(eventRepository).findAllByCategoryId(CATEGORY_ID);
     }
 
+
     private List<Category> mountCategoryEntityList() {
-        Category category1 = CategoryTestBuilder.init()
+        Category category1 = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .id(1L)
                 .build();
 
-        Category category2 = CategoryTestBuilder.init()
+        Category category2 = CategoryTestBuilder
                 .buildModelWithDefaultValues()
                 .id(2L)
                 .build();
@@ -344,12 +354,12 @@ class CategoryServiceTest {
     }
 
     private List<CategoryDTO> mountCategoryListDTO() {
-        CategoryDTO categoryDTO1 = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO1 = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .id(1L)
                 .build();
 
-        CategoryDTO categoryDTO2 = CategoryTestBuilder.init()
+        CategoryDTO categoryDTO2 = CategoryTestBuilder
                 .buildDTOWithDefaultValues()
                 .id(2L)
                 .build();

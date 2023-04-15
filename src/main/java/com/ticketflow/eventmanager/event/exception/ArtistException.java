@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class ArtistExeption extends ConfigException {
+public class ArtistException extends ConfigException {
 
-    public ArtistExeption(final ErrorCode errorCode) {
+    public ArtistException(final ErrorCode errorCode) {
         super(errorCode);
     }
 }

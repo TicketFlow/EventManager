@@ -77,7 +77,7 @@ class JwtUserAuthenticationServiceTest {
     @Test
     void getCurrentUserId_wrongUserIdType() {
         Map<String, Object> tokenAttributes = new HashMap<>();
-        tokenAttributes.put("sub", 12345); // Usando um número em vez de uma string
+        tokenAttributes.put("sub", 12345);
 
         when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         when(jwtAuthenticationToken.getTokenAttributes()).thenReturn(tokenAttributes);
@@ -88,7 +88,7 @@ class JwtUserAuthenticationServiceTest {
     @Test
     void getCurrentUserLocale_wrongLocaleType() {
         Map<String, Object> tokenAttributes = new HashMap<>();
-        tokenAttributes.put("locale", 12345); // Usando um número em vez de uma string
+        tokenAttributes.put("locale", 12345);
 
         when(securityContext.getAuthentication()).thenReturn(jwtAuthenticationToken);
         when(jwtAuthenticationToken.getTokenAttributes()).thenReturn(tokenAttributes);

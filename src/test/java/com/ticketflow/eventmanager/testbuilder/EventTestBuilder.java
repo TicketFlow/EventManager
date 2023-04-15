@@ -22,29 +22,23 @@ public class EventTestBuilder {
 
     private static final String DETAILS = "Example Details";
 
-    public static EventTestBuilder init() {
-        return new EventTestBuilder();
-    }
 
     public static Event createDefaultEvent() {
-        return init()
-                .buildModelWithDefaultValues()
+        return buildModelWithDefaultValues()
                 .build();
     }
 
     public static EventDTO createDefaultEventDTO() {
-        return init()
-                .buildDTOWithDefaultValues()
+        return buildDTOWithDefaultValues()
                 .build();
     }
 
     public static CreateEventDTO createDefaultCreateEventDTO() {
-        return init()
-                .buildCreateDTOWithDefaultValues()
+        return buildCreateDTOWithDefaultValues()
                 .build();
     }
 
-    public Event.EventBuilder buildModelWithDefaultValues() {
+    public static Event.EventBuilder buildModelWithDefaultValues() {
         return Event.builder()
                 .id(ID)
                 .name(NAME)
@@ -59,7 +53,7 @@ public class EventTestBuilder {
                 .tickets(List.of("Example Ticket"));
     }
 
-    public EventDTO.EventDTOBuilder buildDTOWithDefaultValues() {
+    public static EventDTO.EventDTOBuilder buildDTOWithDefaultValues() {
         return EventDTO.builder()
                 .id(String.valueOf(ID))
                 .name(NAME)
@@ -74,7 +68,7 @@ public class EventTestBuilder {
                 .tickets(List.of("Example Ticket"));
     }
 
-    public CreateEventDTO.CreateEventDTOBuilder buildCreateDTOWithDefaultValues() {
+    public static CreateEventDTO.CreateEventDTOBuilder buildCreateDTOWithDefaultValues() {
         return CreateEventDTO.builder()
                 .id(String.valueOf(ID))
                 .name(NAME)
