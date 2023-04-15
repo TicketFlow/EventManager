@@ -12,7 +12,7 @@ public class CategoryTestBuilder {
     private static final String DESCRIPTION = "Example Description";
 
     private static final String AGE_GROUP = "Example Age Group";
-    private static final String owner = "UserId";
+    private static final String owner = "1";
 
     public static CategoryTestBuilder init() {
         return new CategoryTestBuilder();

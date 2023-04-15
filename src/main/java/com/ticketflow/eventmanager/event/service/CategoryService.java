@@ -53,7 +53,6 @@ public class CategoryService {
         return saveAndConvertToDTO(category);
     }
 
-
     public CategoryDTO updateCategory(CategoryDTO categoryDTO) {
         log.info("Updating category {}", categoryDTO.getId());
         validateCategoryUpdate(categoryDTO);
@@ -68,7 +67,7 @@ public class CategoryService {
         log.info("Deleting category {}", categoryId);
 
         Category category = findById(categoryId);
-        checkIfCategoryIdBeingUsed(categoryId);
+        checkIfCategoryCanBeDeleted(categoryId, category);
 
         categoryRepository.delete(category);
     }
@@ -98,6 +97,26 @@ public class CategoryService {
     private void validateCategoryUpdate(CategoryDTO categoryDTO) {
         validateCategoryId(categoryDTO.getId());
         checkIfCategoryNameIsUnique(categoryDTO);
+        verifyCategoryOwner(categoryDTO);
+    }
+
+    private void checkIfCategoryCanBeDeleted(Long categoryId, Category category) {
+        checkIfCategoryIdBeingUsed(categoryId);
+        verifyCategoryOwner(category);
+    }
+
+    private void verifyCategoryOwner(CategoryDTO categoryDTO) {
+        String idUserLoggedIn = jwtUserAuthenticationService.getCurrentUserId();
+        if (!idUserLoggedIn.equals(categoryDTO.getOwner())) {
+            throw new CategoryException(CategoryErrorCode.CATEGORY_NOT_OWNER.withParams());
+        }
+    }
+
+    private void verifyCategoryOwner(Category category) {
+        String idUserLoggedIn = jwtUserAuthenticationService.getCurrentUserId();
+        if (!idUserLoggedIn.equals(category.getOwner())) {
+            throw new CategoryException(CategoryErrorCode.CATEGORY_NOT_OWNER.withParams());
+        }
     }
 
     private void validateCategoryCreate(CategoryDTO categoryDTO) {

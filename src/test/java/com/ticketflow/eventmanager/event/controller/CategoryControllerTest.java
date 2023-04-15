@@ -262,5 +262,37 @@ class CategoryControllerTest {
         verify(categoryService).deleteCategory(categoryId);
     }
 
+    @Test
+    void update_shouldThrowCategoryException_DifferentUser() throws Exception {
+        Long categoryId = 5L;
+
+        List<Event> events = new ArrayList<>();
+        Event event = EventTestBuilder.init()
+                .buildModelWithDefaultValues()
+                .build();
+        events.add(event);
+
+        List<String> eventIds = events.stream()
+                .map(Event::getId)
+                .map(String::valueOf)
+                .toList();
+
+        doThrow(new CategoryException(CategoryErrorCode.CATEGORY_NOT_OWNER.withParams(categoryId, eventIds)))
+                .when(categoryService).deleteCategory(anyLong());
+
+        Mockito.when(jwtUserAuthenticationService.getCurrentUserLocale()).thenReturn(Locale.ENGLISH);
+
+        MvcResult result = mockMvc.perform(delete("/category/{id}", categoryId))
+                .andExpect(status().is4xxClientError())
+                .andReturn();
+
+        String jsonResponse = result.getResponse().getContentAsString();
+        String errorCode = CategoryErrorCode.CATEGORY_NOT_OWNER.getCode();
+
+        assertTrue(jsonResponse.contains(errorCode));
+        assertTrue(jsonResponse.contains("Only the category creator can edit or delete it."));
+        verify(categoryService).deleteCategory(categoryId);
+    }
+
 
 }

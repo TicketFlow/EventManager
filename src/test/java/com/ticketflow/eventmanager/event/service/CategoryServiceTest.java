@@ -146,6 +146,7 @@ class CategoryServiceTest {
                 .description("New description")
                 .name("New name")
                 .ageGroup("Adult")
+                .owner("1")
                 .build();
 
         Category categorySaved = CategoryTestBuilder.init()
@@ -153,10 +154,13 @@ class CategoryServiceTest {
                 .description("New description")
                 .name("New name")
                 .ageGroup("Adult")
+                .owner("1")
                 .build();
 
         when(categoryRepository.findById(categoryDTO.getId())).thenReturn(Optional.of(category));
         when(categoryRepository.save(categorySaved)).thenReturn(categorySaved);
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(categoryDTO.getOwner());
+
 
         CategoryDTO updatedCategoryDTO = categoryService.updateCategory(categoryDTO);
 
@@ -167,6 +171,30 @@ class CategoryServiceTest {
 
         verify(categoryRepository, times(1)).save(category);
     }
+
+    @Test
+    void updateCategory_withDifferentOwner_ShouldThrowCategoryException() {
+        Category category = CategoryTestBuilder.createDefaultCategory();
+
+        CategoryDTO categoryDTO = CategoryTestBuilder.init()
+                .buildDTOWithDefaultValues()
+                .description("New description")
+                .name("New name")
+                .ageGroup("Adult")
+                .owner("1")
+                .build();
+
+        when(categoryRepository.findById(categoryDTO.getId())).thenReturn(Optional.of(category));
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(USER_ID);
+
+        CategoryException exception = assertThrows(CategoryException.class, () -> categoryService.updateCategory(categoryDTO));
+
+        MatcherAssert.assertThat(exception.getMessage(), containsString(CategoryErrorCode.CATEGORY_NOT_OWNER.getCode()));
+
+        verify(categoryRepository, never()).save(any(Category.class));
+        verify(categoryRepository, times(1)).findByName(categoryDTO.getName());
+    }
+
 
     @Test
     void updateCategory_WithEmptyfields_IfCategoryExists_ShouldUpdateCategory() {
@@ -185,6 +213,7 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(categoryDTO.getId())).thenReturn(Optional.of(category));
         when(categoryRepository.save(categorySaved)).thenReturn(categorySaved);
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(categoryDTO.getOwner());
 
         CategoryDTO updatedCategoryDTO = categoryService.updateCategory(categoryDTO);
 
@@ -234,6 +263,7 @@ class CategoryServiceTest {
     void updateCategory_IfCategoryDoesNotExist_ShouldThrowCategoryException() {
         CategoryDTO categoryDTO = CategoryTestBuilder.createDefaultCategoryDTO();
         when(categoryRepository.findById(categoryDTO.getId())).thenReturn(Optional.empty());
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(categoryDTO.getOwner());
 
         NotFoundException exception = assertThrows(NotFoundException.class, () -> categoryService.updateCategory(categoryDTO));
 
@@ -250,6 +280,7 @@ class CategoryServiceTest {
 
         when(categoryRepository.findById(category.getId())).thenReturn(Optional.of(category));
         when(eventRepository.findAllByCategoryId(category.getId())).thenReturn(Collections.emptyList());
+        when(jwtUserAuthenticationService.getCurrentUserId()).thenReturn(category.getOwner());
 
         categoryService.deleteCategory(category.getId());
 
