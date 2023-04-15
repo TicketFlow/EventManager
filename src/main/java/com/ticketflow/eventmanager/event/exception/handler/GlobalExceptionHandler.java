@@ -25,6 +25,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final MessageSource messageSource;
 
     @ExceptionHandler(AuthenticationException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ErrorMessage handleAuthenticationException(AuthenticationException ex, HttpServletResponse response) {
         log.error(ex.getMessage(), ex);
 

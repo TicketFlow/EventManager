@@ -19,17 +19,17 @@ public class SecurityConfiguration {
     private static final String ROLE_USER = "user";
     private static final String ROLE_EVENT_MANAGER = "event_manager";
 
-    private final RESTAuthenticationEntryPoint customAuthenticationFailure;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
-    public SecurityConfiguration(RESTAuthenticationEntryPoint customAuthenticationFailure) {
-        this.customAuthenticationFailure = customAuthenticationFailure;
+    public SecurityConfiguration(CustomAuthenticationEntryPoint customAuthenticationEntryPoint) {
+        this.customAuthenticationEntryPoint = customAuthenticationEntryPoint;
     }
-    
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .exceptionHandling()
-                .authenticationEntryPoint(customAuthenticationFailure)
+                .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .and()
                 .formLogin()
                 .and()
