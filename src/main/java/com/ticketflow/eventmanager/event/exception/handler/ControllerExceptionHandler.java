@@ -1,13 +1,13 @@
 package com.ticketflow.eventmanager.event.exception.handler;
 
 
-import com.ticketflow.eventmanager.event.exception.ConfigException;
 import com.ticketflow.eventmanager.event.exception.EventException;
 import com.ticketflow.eventmanager.event.exception.util.ErrorCode;
 import com.ticketflow.eventmanager.event.exception.util.ErrorMessage;
 import com.ticketflow.eventmanager.event.service.JwtUserAuthenticationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -23,6 +23,7 @@ public class ControllerExceptionHandler {
 
     private final MessageSource messageSource;
 
+    @Autowired
     private final JwtUserAuthenticationService jwtUserAuthenticationService;
 
 
@@ -34,19 +35,6 @@ public class ControllerExceptionHandler {
         String message = resolveErrorMessage(code, errorCode.parameters());
 
         log.error("Error errorCode {}", ex.getMessage(), ex);
-
-        return new ErrorMessage(code, message);
-    }
-
-
-    @ExceptionHandler(ConfigException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorMessage genericHandler(ConfigException ex) {
-        ErrorCode errorCode = ex.getErrorCode();
-        String code = errorCode.code();
-        String message = resolveErrorMessage(code, errorCode.parameters());
-
-        log.error("Error code {}", ex.getMessage(), ex);
 
         return new ErrorMessage(code, message);
     }
