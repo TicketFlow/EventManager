@@ -10,6 +10,9 @@ import java.util.List;
 
 public class CategorySpecification {
 
+    private CategorySpecification() {
+    }
+
     public static Specification<Category> withFilter(CategoryFilter filter) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
